@@ -5,5 +5,5 @@ InstaMeter is a follower counter in Arduino. Project released for "Elles Bougent
 
 | Front                                    | Rear                                   |
 | ---------------------------------------- | -------------------------------------- |
-| ![Front](\INSTAMETER\Pictures\Front.jpg) | ![Rear](\INSTAMETER\Pictures\Rear.jpg) |
+| <img src="INSTAMETER\Pictures\Front.jpg" alt="Front" /> | <img src="INSTAMETER\Pictures\Rear.jpg" alt="Rear" /> |
 
