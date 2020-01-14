@@ -1,60 +1,63 @@
+// -----------------------------------------------------------------------------------------------
+// 💑 PROJECT INSTAMETER
+//  InstaMeter is a follower counter in Arduino. Project released for "Elles Bougent" Organization.
+//  DIY with Tony CALVEZ and Nicolas TB
+//  https://github.com/TonyCalvez/INSTAMETER
+// -----------------------------------------------------------------------------------------------
+
 
 #include "InstagramStats.h"
-
- // ----------------------------
- // Standard Libraries - Already Installed if you have ESP32 set up
- // ----------------------------
-
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
-
-// ----------------------------
-// Additional Libraries - each one of these will need to be installed.
 #include <math.h>
 #include <ESP32Servo.h>
-
-// ----------------------------
-
 #include "JsonStreamingParser.h"
-// Used to parse the Json code within the library
-// Available on the library manager (Search for "Json Streamer Parser")
-// https://github.com/squix78/json-streaming-parser
 
+#define onesecond 1000
+#define oneminute 60000
+#define fiveseconds 5000
+
+// ---- Define Servo Parameters ----
 #define angleMinServo 0
-#define angleMinOffsetServo 20
+#define angleMinOffsetServo 10
 #define angleMaxServo 180
 
+// ---- Define the Scale ----
 #define instaMinFollowers 0
 #define instaMaxFollowers 1000000
 
-#define waitonesecond 1000
-
+// ---- Define the Servo's Pin ----
 #define servoPin 14
 
-Servo myservo;  // create servo object to control a servo
 
-//------- Replace the following! ------
 
+// ---- WiFi Connection ----
+char ssid[] = "netbook";
+char password[] = "netbook1";
+
+// ---- Instagram Username ----
+String userName = "MyFrenchFox"; // from their instagram url https://www.instagram.com/MyFrenchFox/
+
+// ----------------------
 unsigned int angle = 0;
 unsigned int angleold = 0;
 unsigned long nbFollowers = 1000000;
+unsigned long whenDueToCheck = 0;
 
-char ssid[] = "netbook";       // your network SSID (name)
-char password[] = "netbook1";  // your network key
+// ---- Declare Servo Object ----
+Servo myservo;  
 
+// ---- Declare WiFi Object ----
 WiFiClientSecure client;
 InstagramStats instaStats(client);
 
-unsigned long delayBetweenChecks = 60000; //mean time between api requests
-unsigned long whenDueToCheck = 0;
-
-//Inputs
-String userName = "MyFrenchFox"; // from their instagram url https://www.instagram.com/MyFrenchFox/
-
 
 void setup() {
-
   Serial.begin(115200);
+  
+  // Initialisation Servo
+  servoInit();
+
 
   // Attempt to connect to Wifi network:
   Serial.print("Connecting Wifi: ");
@@ -66,13 +69,10 @@ void setup() {
     Serial.print(".");
     delay(500);
   }
-  Serial.println("");
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   IPAddress ip = WiFi.localIP();
   Serial.println(ip);
-
-  servoInit();
 }
 
 void loop() {
@@ -85,18 +85,10 @@ void loop() {
     Serial.print(nbFollowers);
     Serial.println(" Followers");
 
-    whenDueToCheck = timeNow + delayBetweenChecks;
+    whenDueToCheck = timeNow + oneminute;
   }
 
-//  INITIALISATION
-
-
-
-
   angle = FollowerstoAngle(nbFollowers);
-  Serial.println((180-angle)%160);
-  Serial.print(" °");
-
 
   if (angleold != angle){
       Serial.println("The number of Followers have been changed!");
@@ -104,8 +96,8 @@ void loop() {
       angleold = angle;
   }
   
-  
-}
+  delay(oneminute);
+  }
 
 unsigned int FollowerstoAngle(unsigned long nb){
   unsigned int anglegenerated;
@@ -128,37 +120,27 @@ void servoMouvement(unsigned int valueold, unsigned int valuenew){
     if (valuenew < valueold){
       for (unsigned int position = valueold; position > valuenew; position--) {
         myservo.write(position);
-        delay(25);
+        delay(75);
       }
     }
     else if (valuenew > valueold){
       for (unsigned int position = valueold; position < valuenew; position++) {
         myservo.write(position);
-        delay(25);
+        delay(75);
       }
     }
     myservo.detach();  // attaches the servo on pin 9 to the servo object
 }
 
+
 void servoInit(){
   myservo.attach(servoPin, 500, 2400);   // attaches the servo on pin 14 to the servo object
-
+  
   myservo.write(angleMinServo);
-  delay(angleMinServo);
-  myservo.write(angleMaxServo);
-
+  delay(fiveseconds);
+  myservo.write(angleMaxServo - angleMinOffsetServo);
+  delay(fiveseconds);
+  myservo.write(angleMinServo);
+  
   myservo.detach();  // attaches the servo on pin 9 to the servo object
-
-}
-
-
-
-void getInstagramStatsForUser() {
-  Serial.println("Getting instagram user stats for " + userName );
-  InstagramUserStats response = instaStats.getUserStats(userName);
-  Serial.println("Response:");
-  Serial.print("Number of followers: ");
-  Serial.println(response.followedByCount);
-  nbFollowers = response.followedByCount;
-
 }
