@@ -99,6 +99,18 @@ void loop() {
   delay(oneminute);
   }
 
+void servoInit(){
+  myservo.attach(servoPin, 500, 2400);
+  
+  myservo.write(angleMinServo);
+  delay(fiveseconds);
+  myservo.write(angleMaxServo - angleMinOffsetServo);
+  delay(fiveseconds);
+  myservo.write(angleMinServo);
+  
+  myservo.detach();
+}
+
 unsigned int FollowerstoAngle(unsigned long nb){
   unsigned int anglegenerated;
   if (nb > instaMaxFollowers){
@@ -107,7 +119,6 @@ unsigned int FollowerstoAngle(unsigned long nb){
   else{
     anglegenerated = maplogarithmic(nbFollowers, instaMinFollowers, instaMaxFollowers, angleMinServo, angleMaxServo-angleMinOffsetServo);
   }
-
   return (180-anglegenerated)%180;
 }
 
@@ -115,8 +126,9 @@ long maplogarithmic(unsigned long x, unsigned long in_min, unsigned long in_max,
   return log10((x - in_min) + 1) / log10(in_max) * out_max;
 }
 
+
 void servoMouvement(unsigned int valueold, unsigned int valuenew){
-   myservo.attach(servoPin, 500, 2400);   // attaches the servo on pin 14 to the servo object
+   myservo.attach(servoPin, 500, 2400);
     if (valuenew < valueold){
       for (unsigned int position = valueold; position > valuenew; position--) {
         myservo.write(position);
@@ -129,18 +141,5 @@ void servoMouvement(unsigned int valueold, unsigned int valuenew){
         delay(75);
       }
     }
-    myservo.detach();  // attaches the servo on pin 9 to the servo object
-}
-
-
-void servoInit(){
-  myservo.attach(servoPin, 500, 2400);   // attaches the servo on pin 14 to the servo object
-  
-  myservo.write(angleMinServo);
-  delay(fiveseconds);
-  myservo.write(angleMaxServo - angleMinOffsetServo);
-  delay(fiveseconds);
-  myservo.write(angleMinServo);
-  
-  myservo.detach();  // attaches the servo on pin 9 to the servo object
+    myservo.detach();
 }
