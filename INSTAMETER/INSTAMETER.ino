@@ -19,7 +19,7 @@
 
 // ---- Define Servo Parameters ----
 #define angleMinServo 0
-#define angleMinOffsetServo 20
+#define angleMinOffsetServo 15
 #define angleMaxServo 180
 
 // ---- Define the Scale ----
