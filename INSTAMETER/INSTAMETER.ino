@@ -49,7 +49,7 @@ unsigned long delayBetweenChecks = 60000; //mean time between api requests
 unsigned long whenDueToCheck = 0;
 
 //Inputs
-String userName = "manon__briant"; // from their instagram url https://www.instagram.com/brian_lough/
+String userName = "MyFrenchFox"; // from their instagram url https://www.instagram.com/MyFrenchFox/
 
 
 void setup() {
@@ -71,6 +71,8 @@ void setup() {
   Serial.println("IP address: ");
   IPAddress ip = WiFi.localIP();
   Serial.println(ip);
+
+  servoInit();
 }
 
 void loop() {
@@ -78,25 +80,30 @@ void loop() {
   if ((timeNow > whenDueToCheck))  {
     InstagramUserStats response = instaStats.getUserStats(userName);
     nbFollowers = response.followedByCount;
+    Serial.print(userName);
+    Serial.print(" counts ");
+    Serial.print(nbFollowers);
+    Serial.println(" Followers");
+
     whenDueToCheck = timeNow + delayBetweenChecks;
   }
+
+//  INITIALISATION
+
+
 
 
   angle = FollowerstoAngle(nbFollowers);
   Serial.println((180-angle)%160);
+  Serial.print(" °");
+
 
   if (angleold != angle){
-      Serial.println("The number of Followers have been changed:");
-      Serial.print(userName);
-      Serial.print(" counts ");
-      Serial.print(nbFollowers);
-      Serial.println("followers");
+      Serial.println("The number of Followers have been changed!");
       servoMouvement(angleold, angle);
       angleold = angle;
   }
   
-//  Serial.println(angle);
-  delay(waitonesecond);
   
 }
 
@@ -117,7 +124,7 @@ long maplogarithmic(unsigned long x, unsigned long in_min, unsigned long in_max,
 }
 
 void servoMouvement(unsigned int valueold, unsigned int valuenew){
-   myservo.attach(servoPin, 500, 2400);   // attaches the servo on pin 18 to the servo object
+   myservo.attach(servoPin, 500, 2400);   // attaches the servo on pin 14 to the servo object
     if (valuenew < valueold){
       for (unsigned int position = valueold; position > valuenew; position--) {
         myservo.write(position);
@@ -132,6 +139,18 @@ void servoMouvement(unsigned int valueold, unsigned int valuenew){
     }
     myservo.detach();  // attaches the servo on pin 9 to the servo object
 }
+
+void servoInit(){
+  myservo.attach(servoPin, 500, 2400);   // attaches the servo on pin 14 to the servo object
+
+  myservo.write(angleMinServo);
+  delay(angleMinServo);
+  myservo.write(angleMaxServo);
+
+  myservo.detach();  // attaches the servo on pin 9 to the servo object
+
+}
+
 
 
 void getInstagramStatsForUser() {
