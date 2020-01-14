@@ -10,4 +10,4 @@ InstaMeter is a follower counter in Arduino. Project released for "Elles Bougent
 
 </br>
 </br>
-<img src="INSTAMETER\PICTURES\InstaMeter.gif" alt="gif" />
+<img src="INSTAMETER\PICTURES\instameter.gif" alt="gif" />
