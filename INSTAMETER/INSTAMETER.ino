@@ -5,7 +5,7 @@
 //  https://github.com/TonyCalvez/INSTAMETER
 // -----------------------------------------------------------------------------------------------
 
-
+// ---- Libraries ----
 #include "InstagramStats.h"
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
@@ -80,6 +80,7 @@ void loop() {
   if ((timeNow > whenDueToCheck))  {
     InstagramUserStats response = instaStats.getUserStats(userName);
     nbFollowers = response.followedByCount;
+    
     Serial.print(userName);
     Serial.print(" counts ");
     Serial.print(nbFollowers);
@@ -91,7 +92,9 @@ void loop() {
   angle = FollowerstoAngle(nbFollowers);
 
   if (angleold != angle){
+    
       Serial.println("The number of Followers have been changed!");
+      
       servoMouvement(angleold, angle);
       angleold = angle;
   }
@@ -129,17 +132,20 @@ long maplogarithmic(unsigned long x, unsigned long in_min, unsigned long in_max,
 
 void servoMouvement(unsigned int valueold, unsigned int valuenew){
    myservo.attach(servoPin, 500, 2400);
+   
     if (valuenew < valueold){
       for (unsigned int position = valueold; position > valuenew; position--) {
         myservo.write(position);
         delay(75);
       }
     }
+    
     else if (valuenew > valueold){
       for (unsigned int position = valueold; position < valuenew; position++) {
         myservo.write(position);
         delay(75);
       }
     }
+    
     myservo.detach();
 }
