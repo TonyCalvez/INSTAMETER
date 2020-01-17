@@ -32,11 +32,11 @@
 
 
 // ---- WiFi Connection ----
-char ssid[] = "netbook";
-char password[] = "netbook1";
+char ssid[] = "wifi_hotspot";
+char password[] = "mot2passe";
 
 // ---- Instagram Username ----
-String userName = "MyFrenchFox"; // from their instagram url https://www.instagram.com/MyFrenchFox/
+String userName = "MyFrenchFox"; //from their instagram url https://www.instagram.com/MyFrenchFox/
 
 // ----------------------
 unsigned int angle = 0;
